@@ -1,5 +1,3 @@
-name: PlatformIO Build
-
 on:
   push:
     branches: [ main ]
@@ -17,21 +15,24 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install PlatformIO CLI
+      - name: Install PlatformIO
         run: |
           python -m pip install -U pip
           pip install platformio
 
-      - name: Ensure ststm32 platform installed & up-to-date
+      - name: Show PlatformIO versions
         run: |
-          pio platform install ststm32 || true
-          pio platform update ststm32 || true
-          pio platform show ststm32
+          platformio --version
+          pio platform show ststm32 || true
 
-      - name: Clean previous build cache
+      - name: Clean repo build cache
         run: |
-          # safe clean to avoid stale include paths / partial installs
           if [ -d .pio ]; then rm -rf .pio; fi
+
+      - name: Install specific ststm32 platform (stable)
+        run: |
+          pio platform install ststm32@~8.0.0 || true
+          pio platform show ststm32
 
       - name: PlatformIO - Run build
         run: |
