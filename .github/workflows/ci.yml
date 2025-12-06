@@ -1,0 +1,24 @@
+name: PlatformIO Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install PlatformIO
+        run: |
+          python -m pip install -U pip
+          pip install platformio
+      - name: PlatformIO - Run build
+        run: |
+          platformio run -e bluepill_f103c8
