@@ -11,14 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - name: Install PlatformIO
+
+      - name: Install PlatformIO CLI
         run: |
           python -m pip install -U pip
           pip install platformio
+
+      - name: Ensure ststm32 platform installed & up-to-date
+        run: |
+          pio platform install ststm32 || true
+          pio platform update ststm32 || true
+          pio platform show ststm32
+
+      - name: Clean previous build cache
+        run: |
+          # safe clean to avoid stale include paths / partial installs
+          if [ -d .pio ]; then rm -rf .pio; fi
+
       - name: PlatformIO - Run build
         run: |
           platformio run -e bluepill_f103c8
